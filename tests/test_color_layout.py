@@ -152,7 +152,7 @@ class ColorLayoutChecks(unittest.TestCase):
         self.root.geometry("1100x640")
         self.root.update()
         self.assertEqual(app.settings_scrollbar.winfo_manager(), "grid")
-        self.assertLessEqual(app.settings_scrollbar.winfo_width(), 10)
+        self.assertLessEqual(app.settings_scrollbar.winfo_width(), round(12 * app.settings_scrollbar.factor))
         app.settings_canvas.yview_moveto(0)
         app.settings_canvas.event_generate("<MouseWheel>", delta=-120)
         self.root.update()

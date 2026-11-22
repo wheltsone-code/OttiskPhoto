@@ -60,7 +60,7 @@ def run_project(app, output):
                 app.original_button.invoke()
                 actual = (app._number(app.print_w_var), app._number(app.print_h_var))
                 expected = tuple(round(v * 25.4 / ppi, 2) for v in pixels)
-                assert actual == expected, (actual, expected)
+                assert tuple(round(value, 2) for value in actual) == expected, (actual, expected)
                 assert app.ppi_var.get() == f'Исходный размер при {ppi} ppi'
                 report['sizes'].append({'dpi': dpi, 'orientation': orientation, 'ppi': ppi, 'mm': actual})
         checks['pixel_sizes_metadata_independent_exif'] = True

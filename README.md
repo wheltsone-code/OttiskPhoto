@@ -24,7 +24,7 @@ Python, Tk, Pillow/LittleCMS, ReportLab и ресурсы включены вн�
 ## Запуск из исходников
 
 ```powershell
-Set-Location 'C:\Users\acer\Documents\Full'
+Set-Location 'C:\Users\acer\Documents\OttiskPhoto'
 py -3.13 -m venv .venv313
 .\.venv313\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv313\Scripts\python.exe .\main.py
@@ -38,7 +38,7 @@ py -3.13 -m venv .venv313
 в [requirements-build.lock.txt](./requirements-build.lock.txt).
 
 ```powershell
-Set-Location 'C:\Users\acer\Documents\Full'
+Set-Location 'C:\Users\acer\Documents\OttiskPhoto'
 .\.venv313\Scripts\python.exe -m pip install -r requirements-build.lock.txt
 .\.venv313\Scripts\python.exe -m PyInstaller --noconfirm --clean .\OttiskPhoto.spec
 ```

@@ -71,7 +71,7 @@ lines += ['', 'Попиксельная проверка: четыре пред�
 for name,value in proof['files'].items(): lines += [name+': '+value['path'],'SHA256: '+value['sha256']]
 lines += ['', 'Для локальной установки создан отдельный подписанный OttiskPhoto_'+VERSION+'.0_x64_TestSigned.msix в dist/test. Для Partner Center использовать только файл с окончанием _Store.msix.',
           'Identity Name: '+identity['Name'],'Publisher: '+identity['Publisher'],
-          '', 'Пересборка из C:\\Users\\acer\\Documents\\Full:',
+          '', f'Пересборка из {root}:',
           'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build-msix.ps1',
           '', 'Физическая печать и отправка пакета в Store не выполнялись. WACK не запускался. Реальный жест мышью для этой оптимизации не использовался: измерялись обработчики кнопок в Tk и контрольный таймер основного цикла.',
           '', 'Подробные измерения и отчёты: verification-'+VERSION+'.json; журналы и изображения: dist/verification-'+VERSION+'.']
