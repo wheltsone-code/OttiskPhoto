@@ -1,0 +1,2 @@
+# Illustrator sources contain PDF data; preserve their bytes exactly.
+*.ai binary

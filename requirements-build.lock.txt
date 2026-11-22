@@ -1,0 +1,19 @@
+# Exact Windows x64 Python 3.13.14 build environment for 0.1.0-beta.1.
+altgraph==0.17.5
+charset-normalizer==3.5.2
+packaging==26.3
+pefile==2024.8.26
+pillow==12.3.0
+pyinstaller==6.22.3
+pyinstaller-hooks-contrib==2026.10
+pypdf==6.21.4
+pywin32==312
+pywin32-ctypes==0.2.3
+reportlab==4.5.1
+setuptools==84.2.1
+tkinterdnd2==0.7.0
+pypdfium2==5.15.2
+psd-tools==1.27.0
+pillow-heif==1.8.1
+attrs==26.1.0
+numpy==2.5.5

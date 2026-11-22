@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+ xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+ xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+ IgnorableNamespaces="uap rescap">
+ <Identity Name="WeltsOne.605494C5ADEE5" Publisher="CN=B2837D41-24F1-433F-9044-BD76EF8258AD" Version="1.1.10.0" ProcessorArchitecture="x64" />
+ <Properties>
+  <DisplayName>Оттиск Фото</DisplayName>
+  <PublisherDisplayName>WeltsOne</PublisherDisplayName>
+  <Description>Оттиск Фото / Ottisk Photo</Description>
+  <Logo>Assets\StoreLogo.png</Logo>
+ </Properties>
+ <Resources><Resource Language="ru-ru" /><Resource Language="en-us" /></Resources>
+ <Dependencies><TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" /></Dependencies>
+ <Applications>
+  <Application Id="OttiskPhoto" Executable="App\OttiskPhoto.exe" EntryPoint="Windows.FullTrustApplication">
+   <uap:VisualElements DisplayName="Оттиск Фото" Description="Оттиск Фото / Ottisk Photo"
+    BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" />
+  </Application>
+ </Applications>
+ <Capabilities><rescap:Capability Name="runFullTrust" /></Capabilities>
+</Package>

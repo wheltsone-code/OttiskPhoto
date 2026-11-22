@@ -1,0 +1,9 @@
+Pillow>=11.1,<13
+numpy>=2,<3
+reportlab>=4.3,<5
+pypdf>=5,<7
+pywin32>=312; sys_platform == "win32"
+tkinterdnd2==0.7.0
+pypdfium2==5.15.2
+psd-tools==1.27.0
+pillow-heif==1.8.1

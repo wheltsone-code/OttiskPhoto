@@ -1,0 +1,16 @@
+.venv/
+.venv313/
+__pycache__/
+*.py[cod]
+tmp/
+.pytest_cache/
+build/
+dist/
+tools/windows-sdk/
+
+# Local credentials and signing keys must never be published.
+.env
+.env.*
+*.pfx
+*.p12
+*.key

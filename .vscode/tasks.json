@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Оттиск Фото: сборка EXE и MSIX",
+      "type": "shell",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "tools/build-msix.ps1"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Оттиск Фото: запуск",
+      "type": "shell",
+      "command": ".\\.venv313\\Scripts\\python.exe",
+      "args": ["main.py"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Оттиск Фото: проверки",
+      "type": "shell",
+      "command": ".\\.venv313\\Scripts\\python.exe",
+      "args": ["-m", "unittest", "discover", "-s", "tests", "-v"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Оттиск Фото: сборка EXE",
+      "type": "shell",
+      "command": ".\\.venv313\\Scripts\\python.exe",
+      "args": ["-m", "PyInstaller", "--noconfirm", "OttiskPhoto.spec"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
