@@ -1,6 +1,8 @@
 # Оттиск Фото
 
-**1.1.10 · Windows x64 · Python 3.13 · Store MSIX 1.1.10.0**
+**1.1.11 · Windows x64 · Python 3.13**
+
+В версии 1.1.11 значок EXE и окон заменён на фирменный розовый отпечаток пальца. Геометрия оригинального SVG сохранена; рабочие алгоритмы не изменены.
 
 Фотопечать: JPG/JPEG/PNG, HEIC/HEIF, WebP, страницы PDF и совмещённые PSD,
 EXIF, копии, кадрирование, RGB-кривые, PDF и прямая
@@ -51,7 +53,7 @@ Set-Location 'C:\Users\acer\Documents\OttiskPhoto'
 
 Результат: `dist/OttiskPhoto.exe`. Равнозначные команды находятся в
 [tools/build.ps1](./tools/build.ps1); задача сборки добавлена в VS Code.
-Название, иконка и строка версии 1.1.10 включены в Windows Version Resource.
+Название, иконка и строка версии 1.1.11 включены в Windows Version Resource.
 
 ## Сборка MSIX и переносимого EXE
 

@@ -3,7 +3,7 @@ from pathlib import Path
 import tkinter as tk
 
 APP_NAME = "Оттиск Фото"
-VERSION = "1.1.10"
+VERSION = "1.1.11"
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 
 
