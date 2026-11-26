@@ -20,7 +20,7 @@ class ExplorerDrop:
 
     def enter(self, event):
         if event.widget.winfo_class() == 'Canvas':
-            event.widget.configure(highlightthickness=2, highlightbackground='#f53286')
+            event.widget.configure(highlightthickness=2, highlightbackground='#FD3977')
         return COPY
 
     def leave(self, event):

@@ -6,6 +6,7 @@ from .core import (Photo, Rect, Correction, _source_key, load_source, source_siz
                    effective_correction, correct_image, rotation_turns, image_rect, photo_slot, page_items)
 from .image_cache import PREVIEW_IMAGES, image_memo
 from .preview_tasks import check_preview_cancelled
+from .screen_cache import persistent_screen
 
 
 def load_preview_source(photo,long_edge=1024):
@@ -16,6 +17,7 @@ def load_preview_source(photo,long_edge=1024):
 
 
 @image_memo(PREVIEW_IMAGES,'screen')
+@persistent_screen
 def _screen_source(path,modified,length,page,bucket):
     from pathlib import Path
     photo=Photo(Path(path),pdf_page=page)
@@ -40,7 +42,7 @@ def _screen_source(path,modified,length,page,bucket):
 
 
 @image_memo(PREVIEW_IMAGES,'screen-color')
-def _screen_color(path,modified,length,page,bucket,turns,width,height,correction):
+def _screen_color(path,modified,length,page,bucket,turns,width,height,correction,flip_x=False,flip_y=False):
     image=_screen_source(path,modified,length,page,bucket)
     if turns:
         image=image.transpose({1:Image.Transpose.ROTATE_270,2:Image.Transpose.ROTATE_180,3:Image.Transpose.ROTATE_90}[turns])
@@ -48,7 +50,8 @@ def _screen_color(path,modified,length,page,bucket,turns,width,height,correction
     factor=min(1,width/image.width,height/image.height)
     if factor<1:
         image=image.resize((max(1,round(image.width*factor)),max(1,round(image.height*factor))),Image.Resampling.LANCZOS)
-    return correct_image(image,correction)
+    from .core import reflected
+    return reflected(correct_image(image,correction),flip_x,flip_y)
 
 
 def render_tile(photo,cell,size,correction,autorotate,source_key,clip=None):
@@ -66,7 +69,7 @@ def render_tile(photo,cell,size,correction,autorotate,source_key,clip=None):
     width=max(1,math.ceil(placed.width*px))
     height=max(1,math.ceil(placed.height*py))
     bucket=max(1024,2**math.ceil(math.log2(max(width,height))))
-    source=_screen_color(*source_key,photo.pdf_page,bucket,turns,width,height,correction)
+    source=_screen_color(*source_key,photo.pdf_page,bucket,turns,width,height,correction,photo.flip_x,photo.flip_y)
     output=Image.new('RGB',size,'white')
     left,top=max(clip.x,placed.x),max(clip.y,placed.y)
     right,bottom=min(clip.x+clip.width,placed.x+placed.width),min(clip.y+clip.height,placed.y+placed.height)
@@ -128,7 +131,7 @@ class PreviewRenderer:
             chosen=effective_correction(photo,correction) if apply_correction else Correction()
             shape=(area.width,area.height,x1-x0,y1-y0)
             token=('tile',source_keys[path],photo.pdf_page,shape,auto,photo.mode,photo.rotation,
-                   photo.offset_x,photo.offset_y,photo.zoom,chosen)
+                   photo.offset_x,photo.offset_y,photo.zoom,chosen,photo.flip_x,photo.flip_y)
             slots.append((token,photo,Rect(0,0,area.width,area.height),(x0,y0,x1,y1),auto,chosen,source_keys[path]))
         dimensions=(max(1,round(layout.paper_width*scale)),max(1,round(layout.paper_height*scale)))
         structure=(layout,page,dimensions,tuple(slot[3] for slot in slots),len(items))

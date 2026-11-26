@@ -26,18 +26,19 @@ from .production_geometry import page_cells,fold_guides
 from .duplex_ui import FoldingMixin
 from .round_scrollbar import RoundScrollbar
 from .async_preview import AsyncPreviewMixin
+from .import_tasks import ImportMixin
 from .preview import PreviewRenderer, load_preview_source
 from .widgets import CapsuleButton, NumberSpin, TickScale, ToolTip, ellipsize, RoundedCombo, CheckMark, FoldSection, LockButton
 from .metadata import APP_NAME, VERSION, set_icon, ASSETS
 
 
-PINK = "#f53286"
+PINK = "#FD3977"
 BG = "#faf8fa"
 INK = "#20232b"
 MUTED = "#737782"
 
 
-class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, EditingMixin):
+class IllusivePrintApp(ProductionMixin, ImportMixin, AsyncPreviewMixin, FoldingMixin, EditingMixin):
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
         self.preferences = load_preferences()
@@ -172,6 +173,8 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
     def _on_destroy(self, event):
         if event.widget == self.root:
             self._closing = True
+            if getattr(self,'_import_job',None): self._import_job['cancel'].set()
+            if getattr(self,'_import_poll_job',None): self.root.after_cancel(self._import_poll_job)
             self.close_async_preview()
             if self._library_scroll_job:self.root.after_cancel(self._library_scroll_job)
             if self._pending_pdf:
@@ -654,6 +657,14 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
         self.pdf_size_button = CapsuleButton(selected_box, text='Взять размер страницы из PDF',
                                               command=self.take_pdf_size, height=26)
         self.pdf_size_button.grid(row=4,column=0,columnspan=2,sticky='ew')
+        mirrors = ttk.Frame(selected_box)
+        mirrors.grid(row=5,column=0,columnspan=2,sticky='ew',pady=2)
+        self.flip_x_button = CapsuleButton(mirrors,text='↔ Отразить',command=lambda:self.reflect_photos(True),height=26)
+        self.flip_x_button.pack(side='left',expand=True,fill='x',padx=(0,4))
+        self.flip_y_button = CapsuleButton(mirrors,text='↕ Отразить',command=lambda:self.reflect_photos(False),height=26)
+        self.flip_y_button.pack(side='left',expand=True,fill='x')
+        ToolTip(self.flip_x_button,'Поменять местами левую и правую стороны')
+        ToolTip(self.flip_y_button,'Поменять местами верх и низ')
 
         self.color_section = FoldSection(settings, 'Цвет')
         self.color_section.summary_provider = lambda opened: self.color_section.summary
@@ -1049,7 +1060,7 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
             self.pdf_size_button.grid()
         else:
             self.pdf_size_button.grid_remove()
-        for button in (self.fill_button, self.fit_button, self.rotate_button, self.reset_frame_button, self.zoom_button,
+        for button in (self.fill_button, self.fit_button, self.rotate_button, self.flip_x_button,self.flip_y_button,self.reset_frame_button, self.zoom_button,
                        self.apply_crop_button, self.original_button):
             self._state(button, selected)
         zoom = self.photos[self.selected].zoom if selected else 1.0
@@ -1321,9 +1332,9 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
 
     def add_dialog(self) -> None:
         paths = filedialog.askopenfilenames(parent=self.root, title="Добавить фотографии",
-                                             filetypes=[("Фото и документы", "*.jpg *.jpeg *.png *.webp *.heic *.heif *.pdf *.psd"),('Все файлы','*.*')])
+                                             filetypes=[("Фото и документы", "*.jpg *.jpeg *.png *.webp *.heic *.heif *.pdf *.psd *.svg *.ai *.eps *.cdr"),('Все файлы','*.*')])
         if paths:
-            self.add_paths([Path(path) for path in paths])
+            self.start_import([Path(path) for path in paths])
 
     def folder_dialog(self) -> None:
         folder = filedialog.askdirectory(parent=self.root, title="Открыть папку с фотографиями")
@@ -1338,7 +1349,7 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
         if not paths:
             messagebox.showinfo("Фотографии не найдены", "В папке нет поддерживаемых фото или документов. Подпапки не просматриваются.", parent=self.root)
             return
-        self.add_paths(paths,folder_batch=True)
+        self.start_import(paths,folder_batch=True)
 
     def take_pdf_size(self):
         if not 0 <= self.selected < len(self.photos) or self.photos[self.selected].pdf_page is None:
@@ -1396,20 +1407,19 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
                     expanded.append(path)
             except OSError:
                 skipped += 1
-        added, ignored = self.add_paths(expanded, report_errors=False,folder_batch=folder_batch)
-        self.status_var.set(f'Добавлено {added} фото, пропущено {skipped + ignored} файлов')
-        if self.last_import_errors:
-            self.status_var.set(self.status_var.get()+' · '+self.last_import_errors[0])
+        self.start_import(expanded,folder_batch=folder_batch,skipped=skipped)
 
     def add_paths(self, paths: list[Path], report_errors=True, folder_batch=False) -> tuple[int, int]:
         from .document_sources import pdf_pages
+        from .vector_import import VECTOR_EXTENSIONS, prepare_document
         from .diagnostics import record
         existing = {(photo.path.resolve(),photo.pdf_page) for photo in self.photos}
         errors = []
         added = 0
         skipped = 0
         pdf_policy = None
-        if folder_batch and any(Path(p).suffix.lower()=='.pdf' for p in paths):
+        self.last_import_warnings=[]
+        if folder_batch and any(Path(p).suffix.lower() in VECTOR_EXTENSIONS|{'.pdf'} for p in paths):
             pdf_policy = self.choose_pdf_import()
         for path in paths:
             try:
@@ -1417,10 +1427,13 @@ class IllusivePrintApp(ProductionMixin, AsyncPreviewMixin, FoldingMixin, Editing
                 if path.suffix.lower() not in SUPPORTED:
                     raise ValueError('Неподдерживаемый формат файла')
                 pages = [None]
-                if path.suffix.lower()=='.pdf':
+                if path.suffix.lower() in VECTOR_EXTENSIONS|{'.pdf'}:
                     if folder_batch and pdf_policy in (None,'Пропустить PDF'):
                         skipped += 1
                         continue
+                    if path.suffix.lower() in VECTOR_EXTENSIONS:
+                        result=prepare_document(path)
+                        self.last_import_warnings.extend(result.warnings)
                     count = pdf_pages(path)
                     pages = ([0] if pdf_policy=='Только первые страницы' or count==1 else
                              list(range(count)) if pdf_policy=='Все страницы' else self.choose_pdf_import(path,count))
@@ -1916,6 +1929,9 @@ def main() -> None:
     elif len(sys.argv) >= 3 and sys.argv[1] == '--fold-self-check':
         from .fold_check import run
         root.after(150,lambda:run(app,sys.argv[2],*(sys.argv[3:5])))
+    elif len(sys.argv) >= 4 and sys.argv[1] == '--vector-self-check':
+        from .vector_check import run
+        root.after(150,lambda:run(app,sys.argv[2],sys.argv[3],'--keep-open' in sys.argv))
     elif len(sys.argv) >= 3 and sys.argv[1] == '--project-self-check':
         from .self_check import run_project
         root.after(150, lambda: run_project(app, sys.argv[2]))
@@ -1929,5 +1945,5 @@ def main() -> None:
         from .self_check import run
         root.after(150, lambda: run(app, sys.argv[2], sys.argv[3:]))
     elif len(sys.argv) > 1:
-        root.after(100, lambda: app.add_paths([Path(arg) for arg in sys.argv[1:]]))
+        root.after(100, lambda: app.start_import([Path(arg) for arg in sys.argv[1:]]))
     root.mainloop()

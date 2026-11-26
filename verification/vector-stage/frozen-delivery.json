@@ -1,0 +1,99 @@
+{
+  "version": "1.2.0",
+  "frozen": true,
+  "checks": {
+    "import": true,
+    "batch_reflection_undo": true,
+    "immutable_print_snapshot": true,
+    "pdf_300_has_vector_forms": true,
+    "pdf_600_has_vector_forms": true,
+    "print_preparation_fake_backend": true,
+    "ru_en": true
+  },
+  "warnings": [
+    "('Предупреждения импорта', 'cdr15.cdr: CDR-15: импортируются страницы, доступные Inkscape; проверьте полноту / only pages exposed by Inkscape are imported; check completeness\\ncdr15.cdr: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families\\nfeatures.eps: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families\\nfeatures.svg: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families\\nlibreoffice.eps: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families\\nmultipage.svg: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families\\npostscript.ai: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families')",
+    "cdr15.cdr: CDR-15: импортируются страницы, доступные Inkscape; проверьте полноту / only pages exposed by Inkscape are imported; check completeness",
+    "cdr15.cdr: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families",
+    "features.eps: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families",
+    "features.svg: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families",
+    "libreoffice.eps: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families",
+    "multipage.svg: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families",
+    "postscript.ai: Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+  ],
+  "sources": [
+    {
+      "file": "cdr15.cdr · стр. 1",
+      "page": 0,
+      "mm": [
+        209.9995849388889,
+        296.99965259166663
+      ]
+    },
+    {
+      "file": "features.eps · стр. 1",
+      "page": 0,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ]
+    },
+    {
+      "file": "features.svg · стр. 1",
+      "page": 0,
+      "mm": [
+        70.00000005277778,
+        44.99999995833333
+      ]
+    },
+    {
+      "file": "libreoffice.eps · стр. 1",
+      "page": 0,
+      "mm": [
+        206.375,
+        155.575
+      ]
+    },
+    {
+      "file": "multipage.svg · стр. 1",
+      "page": 0,
+      "mm": [
+        70.00000005277778,
+        44.99999995833333
+      ]
+    },
+    {
+      "file": "multipage.svg · стр. 2",
+      "page": 1,
+      "mm": [
+        70.00000005277778,
+        44.99999995833333
+      ]
+    },
+    {
+      "file": "pdf-compatible.ai · стр. 1",
+      "page": 0,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ]
+    },
+    {
+      "file": "pdf-compatible.ai · стр. 2",
+      "page": 1,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ]
+    },
+    {
+      "file": "postscript.ai · стр. 1",
+      "page": 0,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ]
+    }
+  ],
+  "ui_heartbeat_max_gap_seconds": 2.770953899998858,
+  "passed": true
+}

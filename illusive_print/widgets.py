@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageTk
 from .i18n import ui_text
 
 
-PINK = "#f53286"
+PINK = "#FD3977"
 
 
 def ellipsize(widget, text, width):

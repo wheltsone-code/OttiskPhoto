@@ -6,6 +6,7 @@ tmp/
 .pytest_cache/
 build/
 dist/
+import-module/
 tools/windows-sdk/
 
 # Local credentials and signing keys must never be published.

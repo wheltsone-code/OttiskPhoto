@@ -8,6 +8,11 @@ from tkinter import ttk, filedialog as native_files, messagebox as native_messag
 
 
 EN = {
+    '↔ Отразить':'↔ Mirror', '↕ Отразить':'↕ Flip',
+    'Поменять местами левую и правую стороны':'Swap left and right sides',
+    'Поменять местами верх и низ':'Swap top and bottom sides',
+    'Подготовка документов…':'Preparing documents…',
+    'Предупреждения импорта':'Import warnings',
     'Связать пропорции':'Link proportions','Разблокировать пропорции':'Unlock proportions',
     'Связать вылеты':'Link bleed','Разблокировать вылеты':'Unlink bleed',
     'Яркость':'Brightness', 'Гамма':'Gamma',

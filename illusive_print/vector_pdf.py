@@ -42,6 +42,8 @@ def vector_matrix(photo,cell,autorotate,paper_height,reference_box='trim'):
     turns=rotation_turns((w,h),cell,photo,autorotate)
     for _ in range(turns):
         transform=compose((0,-1,1,0,0,w),transform);w,h=h,w
+    if photo.flip_x: transform=compose((-1,0,0,1,w,0),transform)
+    if photo.flip_y: transform=compose((1,0,0,-1,0,h),transform)
     placed=image_rect((w,h),cell,photo)
     mm=72/25.4;factor=placed.width*mm/w
     return compose((factor,0,0,factor,placed.x*mm,(paper_height-placed.y-placed.height)*mm),transform)
@@ -106,7 +108,8 @@ def raster_tile(photo,trim,paint,size,reference_box='trim'):
     result=io.BytesIO()
     local=Rect(trim.x-paint.x,trim.y-paint.y,trim.width,trim.height)
     attach_vectors(buffer,result,{0:[(photo,local,Rect(0,0,paint.width,paint.height),False,reference_box)]},paint.height)
-    with pdfium.PdfDocument(result.getvalue()) as document:
+    from .document_sources import _pdf_lock
+    with _pdf_lock, pdfium.PdfDocument(result.getvalue()) as document:
         page=document[0]
         try:
             bitmap=page.render(scale=max(size[0]/(paint.width*mm),size[1]/(paint.height*mm)))

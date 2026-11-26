@@ -1,0 +1,261 @@
+{
+  "code_root": "C:\\Users\\acer\\Documents\\OttiskPhoto",
+  "workload": "nine distinct 4000x3000 JPEGs; A3 four slots; single A4 output 300ppi",
+  "seconds": {
+    "photo_cold_open": {
+      "median": 1.125054199997976,
+      "samples": [
+        1.125054199997976
+      ]
+    },
+    "photo_reopen_after_ram_clear": {
+      "median": 0.11607519999961369,
+      "samples": [
+        0.11607519999961369
+      ]
+    },
+    "preview_first": {
+      "median": 0.06032810000033351,
+      "samples": [
+        0.06032810000033351
+      ]
+    },
+    "preview_repeat": {
+      "median": 0.001240400000824593,
+      "samples": [
+        0.001335000000835862,
+        0.0012675999969360419,
+        0.0012159000034444034,
+        0.001207000001159031,
+        0.001240400000824593
+      ]
+    },
+    "switch_page_cold": {
+      "median": 0.044937999999092426,
+      "samples": [
+        0.044937999999092426
+      ]
+    },
+    "switch_page_warm": {
+      "median": 0.0012242999946465716,
+      "samples": [
+        0.0016157999998540618,
+        0.0011396999980206601,
+        0.0013250999982119538,
+        0.0012242999946465716,
+        0.0011677000002237037
+      ]
+    },
+    "crop_one": {
+      "median": 0.002386200001637917,
+      "samples": [
+        0.002386200001637917
+      ]
+    },
+    "rotate_one": {
+      "median": 0.015792400001373608,
+      "samples": [
+        0.015792400001373608
+      ]
+    },
+    "reflect_one": {
+      "median": 0.014993700002378318,
+      "samples": [
+        0.014993700002378318
+      ]
+    },
+    "individual_color": {
+      "median": 0.025701400001707952,
+      "samples": [
+        0.025701400001707952
+      ]
+    },
+    "global_color": {
+      "median": 0.0583654999936698,
+      "samples": [
+        0.0583654999936698
+      ]
+    },
+    "pdf_export_300": {
+      "median": 2.8977614999967045,
+      "samples": [
+        2.8977614999967045
+      ]
+    },
+    "print_prepare_300": {
+      "median": 1.9914355000000796,
+      "samples": [
+        1.9914355000000796
+      ]
+    },
+    "features.svg_export": {
+      "median": 0.11062549999769544,
+      "samples": [
+        0.11062549999769544
+      ]
+    },
+    "multipage.svg_export": {
+      "median": 0.09655680000287248,
+      "samples": [
+        0.09655680000287248
+      ]
+    },
+    "features.eps_export": {
+      "median": 0.10384110000450164,
+      "samples": [
+        0.10384110000450164
+      ]
+    },
+    "postscript.ai_export": {
+      "median": 0.07810859999881359,
+      "samples": [
+        0.07810859999881359
+      ]
+    },
+    "pdf-compatible.ai_export": {
+      "median": 0.08098249999602558,
+      "samples": [
+        0.08098249999602558
+      ]
+    },
+    "cdr15.cdr_export": {
+      "median": 0.10122180000325898,
+      "samples": [
+        0.10122180000325898
+      ]
+    },
+    "libreoffice.eps_export": {
+      "median": 0.10390740000002552,
+      "samples": [
+        0.10390740000002552
+      ]
+    }
+  },
+  "memory": {
+    "peak_working_bytes": 427212800,
+    "final_working_bytes": 102137856
+  },
+  "cache": {
+    "full": {
+      "bytes": 0,
+      "budget": 30198988,
+      "entries": 0,
+      "hits": 0,
+      "misses": 16,
+      "evictions": 0
+    },
+    "preview": {
+      "bytes": 34285804,
+      "budget": 36909875,
+      "entries": 37,
+      "hits": 19,
+      "misses": 38,
+      "evictions": 1
+    }
+  },
+  "vectors": {
+    "features.svg": {
+      "kind": "svg",
+      "cold_seconds": 4.57176310000068,
+      "disk_seconds": 0.014067399999476038,
+      "pages": 1,
+      "mm": [
+        70.00000005277778,
+        44.99999995833333
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    },
+    "multipage.svg": {
+      "kind": "svg",
+      "cold_seconds": 4.764555699999619,
+      "disk_seconds": 0.014290700004494283,
+      "pages": 2,
+      "mm": [
+        70.00000005277778,
+        44.99999995833333
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    },
+    "features.eps": {
+      "kind": "eps",
+      "cold_seconds": 0.5906329999997979,
+      "disk_seconds": 0.013964499994472135,
+      "pages": 1,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    },
+    "postscript.ai": {
+      "kind": "ai-postscript",
+      "cold_seconds": 0.2950725999980932,
+      "disk_seconds": 0.01296860000002198,
+      "pages": 1,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    },
+    "pdf-compatible.ai": {
+      "kind": "ai-pdf",
+      "cold_seconds": 0.0028253999989829026,
+      "disk_seconds": 0.0020610999999917112,
+      "pages": 2,
+      "mm": [
+        70.55555555555556,
+        35.27777777777778
+      ],
+      "cache_hit": false,
+      "warnings": []
+    },
+    "cdr15.cdr": {
+      "kind": "cdr-15",
+      "cold_seconds": 4.033542400000442,
+      "disk_seconds": 0.014523599995300174,
+      "pages": 1,
+      "mm": [
+        209.9995849388889,
+        296.99965259166663
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "CDR-15: импортируются страницы, доступные Inkscape; проверьте полноту / only pages exposed by Inkscape are imported; check completeness",
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    },
+    "libreoffice.eps": {
+      "kind": "eps",
+      "cold_seconds": 0.2908110999997007,
+      "disk_seconds": 0.01308949999656761,
+      "pages": 1,
+      "mm": [
+        206.375,
+        155.575
+      ],
+      "cache_hit": true,
+      "warnings": [
+        "Проверьте шрифты макета: конвертер может заменить отсутствующие гарнитуры / Check document fonts: the converter may substitute missing families"
+      ]
+    }
+  },
+  "disk_cache": {
+    "hits": 15,
+    "misses": 15,
+    "writes": 15,
+    "evictions": 0
+  }
+}

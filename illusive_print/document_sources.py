@@ -4,13 +4,17 @@ from pathlib import Path
 from threading import RLock
 from .color_management import to_srgb
 from .image_cache import FULL_IMAGES, image_memo
+from .resources import RESOURCES
 
 _pdf_lock = RLock()
 PSD_COMPATIBILITY = 'Сохраните PSD в Photoshop с включённой максимальной совместимостью или экспортируйте в PNG/TIFF'
 
 
-def pdf_pages(path):
+def pdf_pages(path, prepared=False):
     import pypdfium2 as pdfium
+    if not prepared:
+        from .vector_import import document_pdf
+        path = document_pdf(path)
     try:
         with _pdf_lock, pdfium.PdfDocument(str(path)) as document:
             return len(document)
@@ -25,6 +29,8 @@ def _pdf_size(path, modified, length, index):
 
 
 def pdf_size(path, index):
+    from .vector_import import document_pdf
+    path = document_pdf(path)
     stat = path.stat()
     return _pdf_size(str(path.resolve()),stat.st_mtime_ns,stat.st_size,index)
 
@@ -36,17 +42,21 @@ def _pdf_render(path, modified, length, index, ppi):
     with _pdf_lock, pdfium.PdfDocument(display_bytes(path,modified,length,index)) as document:
         page = document[0]
         try:
-            bitmap = page.render(scale=ppi/72,fill_color=(255,255,255,255))
-            try:
-                image = bitmap.to_pil().copy()
-            finally:
-                bitmap.close()
+            width,height=page.get_size()
+            with RESOURCES.working(int(width*height*(ppi/72)**2*16)):
+                bitmap = page.render(scale=ppi/72,fill_color=(255,255,255,255))
+                try:
+                    image = bitmap.to_pil().copy()
+                finally:
+                    bitmap.close()
         finally:
             page.close()
     return to_srgb(image)
 
 
 def pdf_render(path, index, ppi=96):
+    from .vector_import import document_pdf
+    path = document_pdf(path)
     stat = path.stat()
     return _pdf_render(str(path.resolve()),stat.st_mtime_ns,stat.st_size,index,round(ppi,4))
 

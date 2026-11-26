@@ -82,7 +82,7 @@ class FoldingMixin(BookletEditorMixin,BaseFoldingMixin):
             frame.pack(fill='x',pady=(0,6)); frame.columnconfigure(2,weight=1)
             frame._position=position
             chosen=position==self._booklet_selected or (index==self.selected and self._booklet_selected is None and index is not None)
-            frame.configure(highlightbackground='#f53286' if chosen else '#e4dfe5',highlightthickness=2 if chosen else 1)
+            frame.configure(highlightbackground='#FD3977' if chosen else '#e4dfe5',highlightthickness=2 if chosen else 1)
             handle=tk.Label(frame,text='⠿',cursor='fleur',bg='white',width=2)
             handle.grid(row=0,column=0,sticky='ns');frame._handle=handle
             thumb=tk.Label(frame,bg='white',text='□' if index is None else '')
@@ -145,7 +145,7 @@ class FoldingMixin(BookletEditorMixin,BaseFoldingMixin):
         self._booklet_move=(position,uid)
         self._library_target=position if isinstance(position,int) else len(self.booklet_leaves)
         self._library_grab=event.widget; self._library_grab.grab_set()
-        self._insert_line=tk.Frame(self.library_inner,bg='#f53286',height=3)
+        self._insert_line=tk.Frame(self.library_inner,bg='#FD3977',height=3)
         self._library_pointer=self.event_root(event)
         self.booklet_move_motion(event)
         self._library_scroll_job=self.root.after(60,self.library_autoscroll)
@@ -350,7 +350,7 @@ class FoldingMixin(BookletEditorMixin,BaseFoldingMixin):
     def highlight_target(self,target):
         for widget in self.panel_buttons+self.cover_targets:
             color='#ffd8e9' if widget is target else 'white'
-            widget.configure(bg=color,highlightbackground='#f53286' if widget is target else '#dfd6dc')
+            widget.configure(bg=color,highlightbackground='#FD3977' if widget is target else '#dfd6dc')
             for child in widget.winfo_children():child.configure(bg=color)
 
     def preview_slot_at(self,x,y):

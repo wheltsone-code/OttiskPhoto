@@ -1,0 +1,208 @@
+{
+  "cycles": 200,
+  "seconds": 4.690444399995613,
+  "settled_samples": [
+    {
+      "cycle": 20,
+      "rss": 95940608,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 35412504,
+        "budget": 36909875,
+        "entries": 36,
+        "hits": 5,
+        "misses": 37,
+        "evictions": 1
+      }
+    },
+    {
+      "cycle": 40,
+      "rss": 96886784,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 34362548,
+        "budget": 36909875,
+        "entries": 34,
+        "hits": 14,
+        "misses": 70,
+        "evictions": 36
+      }
+    },
+    {
+      "cycle": 60,
+      "rss": 70422528,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 14908560,
+        "budget": 36909875,
+        "entries": 12,
+        "hits": 0,
+        "misses": 12,
+        "evictions": 0
+      }
+    },
+    {
+      "cycle": 80,
+      "rss": 93331456,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 36804948,
+        "budget": 36909875,
+        "entries": 35,
+        "hits": 8,
+        "misses": 46,
+        "evictions": 11
+      }
+    },
+    {
+      "cycle": 100,
+      "rss": 93908992,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 34127764,
+        "budget": 36909875,
+        "entries": 34,
+        "hits": 21,
+        "misses": 78,
+        "evictions": 44
+      }
+    },
+    {
+      "cycle": 120,
+      "rss": 95354880,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 34251728,
+        "budget": 36909875,
+        "entries": 32,
+        "hits": 7,
+        "misses": 41,
+        "evictions": 9
+      }
+    },
+    {
+      "cycle": 140,
+      "rss": 94171136,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 34597332,
+        "budget": 36909875,
+        "entries": 34,
+        "hits": 12,
+        "misses": 75,
+        "evictions": 41
+      }
+    },
+    {
+      "cycle": 160,
+      "rss": 76247040,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 21316000,
+        "budget": 36909875,
+        "entries": 21,
+        "hits": 3,
+        "misses": 21,
+        "evictions": 0
+      }
+    },
+    {
+      "cycle": 180,
+      "rss": 95825920,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 36103712,
+        "budget": 36909875,
+        "entries": 40,
+        "hits": 14,
+        "misses": 61,
+        "evictions": 21
+      }
+    },
+    {
+      "cycle": 200,
+      "rss": 95920128,
+      "full": {
+        "bytes": 0,
+        "budget": 30198988,
+        "entries": 0,
+        "hits": 0,
+        "misses": 0,
+        "evictions": 0
+      },
+      "preview": {
+        "bytes": 36804948,
+        "budget": 36909875,
+        "entries": 35,
+        "hits": 23,
+        "misses": 91,
+        "evictions": 56
+      }
+    }
+  ],
+  "rss_change_after_warmup": -966656,
+  "scope": "200 edits/page switches with cache eviction; not an hours-long or clean-machine test"
+}

@@ -1,0 +1,111 @@
+{
+  "code_root": "C:\\Users\\acer\\Documents\\OttiskPhoto\\tmp\\vector-baseline",
+  "workload": "nine distinct 4000x3000 JPEGs; A3 four slots; single A4 output 300ppi",
+  "seconds": {
+    "photo_cold_open": {
+      "median": 0.7448683000038727,
+      "samples": [
+        0.7448683000038727
+      ]
+    },
+    "photo_reopen_after_ram_clear": {
+      "median": 0.7724209000007249,
+      "samples": [
+        0.7724209000007249
+      ]
+    },
+    "preview_first": {
+      "median": 0.06957490000058897,
+      "samples": [
+        0.06957490000058897
+      ]
+    },
+    "preview_repeat": {
+      "median": 0.001288700004806742,
+      "samples": [
+        0.002972999995108694,
+        0.0012923999966005795,
+        0.0011976999958278611,
+        0.001288700004806742,
+        0.0011845000044559129
+      ]
+    },
+    "switch_page_cold": {
+      "median": 0.0644010000032722,
+      "samples": [
+        0.0644010000032722
+      ]
+    },
+    "switch_page_warm": {
+      "median": 0.001295499998377636,
+      "samples": [
+        0.0026163000002270564,
+        0.0015434999950230122,
+        0.0012493000031099655,
+        0.001272500005143229,
+        0.001295499998377636
+      ]
+    },
+    "crop_one": {
+      "median": 0.004328299997723661,
+      "samples": [
+        0.004328299997723661
+      ]
+    },
+    "rotate_one": {
+      "median": 0.015964700003678445,
+      "samples": [
+        0.015964700003678445
+      ]
+    },
+    "individual_color": {
+      "median": 0.03202389999933075,
+      "samples": [
+        0.03202389999933075
+      ]
+    },
+    "global_color": {
+      "median": 0.07254269999975804,
+      "samples": [
+        0.07254269999975804
+      ]
+    },
+    "pdf_export_300": {
+      "median": 2.971881099998427,
+      "samples": [
+        2.971881099998427
+      ]
+    },
+    "print_prepare_300": {
+      "median": 2.1803074999988894,
+      "samples": [
+        2.1803074999988894
+      ]
+    }
+  },
+  "memory": {
+    "peak_working_bytes": 477597696,
+    "final_working_bytes": 193937408,
+    "photo_tree_peak_sampled_bytes": 474599424,
+    "whole_tree_peak_sampled_bytes": 474599424,
+    "tree_sampling_interval_seconds": 0.025,
+    "tree_samples": 146
+  },
+  "cache": {
+    "full": {
+      "bytes": 96002048,
+      "budget": 134217728,
+      "entries": 2,
+      "hits": 0,
+      "misses": 16
+    },
+    "preview": {
+      "bytes": 36617384,
+      "budget": 201326592,
+      "entries": 36,
+      "hits": 18,
+      "misses": 36
+    }
+  },
+  "vectors": {}
+}

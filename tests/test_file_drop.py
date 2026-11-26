@@ -17,7 +17,16 @@ def send_drop(hwnd, paths):
     widget = hwnd
     payload = widget.tk.call('format','%s',widget.tk.call('list',*map(str,paths)))
     command = widget.tk.splitlist(widget.dnd_bind('<<Drop>>'))[0]
-    return widget.tk.call(command,'copy','copy',1,'','','','',payload,'Drop','','','','DND_Files','','',str(widget),0,0)
+    result=widget.tk.call(command,'copy','copy',1,'','','','',payload,'Drop','','','','DND_Files','','',str(widget),0,0)
+    # Import now runs off the UI thread. Drive the real event loop to completion.
+    import time
+    root=widget.winfo_toplevel()
+    root.update()
+    until=time.monotonic()+60
+    while getattr(root,'_ottisk_import_pending',False) and time.monotonic()<until:
+        root.update();time.sleep(.01)
+    assert not getattr(root,'_ottisk_import_pending',False), 'background import timed out'
+    return result
 
 
 class FileDropTests(unittest.TestCase):

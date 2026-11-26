@@ -26,9 +26,10 @@ from .color_management import to_srgb, srgb_bytes
 from .metadata import APP_NAME, VERSION
 from .diagnostics import record
 from .image_cache import FULL_IMAGES, PREVIEW_IMAGES, image_memo
+from .resources import RESOURCES, working_budget
 
 
-SUPPORTED = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".pdf", ".psd"}
+SUPPORTED = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".pdf", ".psd", ".svg", ".ai", ".eps", ".cdr"}
 PAPERS = {"10 × 15 см": (100.0, 150.0), "13 × 18 см": (130.0, 180.0),
           "15 × 21 см": (150.0, 210.0), "A4": (210.0, 297.0), "A3": (297.0, 420.0), "US Letter": (215.9, 279.4),
           "5 × 7″": (127.0, 177.8), "SRA3": (320.0,450.0), "A3+": (329.0,483.0)}
@@ -100,6 +101,8 @@ class Photo:
     correction: Correction | None = None
     pdf_page: int | None = None
     uid: str = field(default_factory=lambda: uuid4().hex)
+    flip_x: bool = False  # Axes of the oriented image, after auto/manual rotation.
+    flip_y: bool = False
 
     @property
     def name(self):
@@ -111,6 +114,15 @@ class Photo:
 
     def rotate_clockwise(self) -> None:
         self.rotation = (self.rotation + 1) % 4
+        self.flip_x, self.flip_y = self.flip_y, self.flip_x
+
+    def reflect(self, horizontal=True):
+        if horizontal:
+            self.flip_x = not self.flip_x
+            self.offset_x = -self.offset_x
+        else:
+            self.flip_y = not self.flip_y
+            self.offset_y = -self.offset_y
 
     def set_mode(self, mode: Literal["fill", "fit"]) -> None:
         self.mode = mode
@@ -119,6 +131,7 @@ class Photo:
         self.offset_x = self.offset_y = 0.0
         self.rotation = 0
         self.zoom = 1.0
+        self.flip_x = self.flip_y = False
 
     def move(self, dx: float, dy: float) -> None:
         self.offset_x = max(-1.0, min(1.0, round(self.offset_x + dx, 6)))
@@ -567,7 +580,7 @@ def photo_slot(photo: Photo, cell: Rect, layout: Layout) -> tuple[Photo, Rect, b
         if spread_grid(layout)[4]:
             native=Rect(0,0,*layout.booklet_page_size)
             info=source_size(photo);turns=rotation_turns((info.width_px,info.height_px),native,photo,layout.autorotate)
-            return replace(photo,rotation=(turns+1)%4,offset_x=-photo.offset_y,offset_y=photo.offset_x),area,False
+            return replace(photo,rotation=(turns+1)%4,offset_x=-photo.offset_y,offset_y=photo.offset_x,flip_x=photo.flip_y,flip_y=photo.flip_x),area,False
     if not layout.card:
         return photo, area, layout.autorotate
     c = layout.card
@@ -575,7 +588,7 @@ def photo_slot(photo: Photo, cell: Rect, layout: Layout) -> tuple[Photo, Rect, b
     info = source_size(photo)
     turns = rotation_turns((info.width_px, info.height_px), native, photo, layout.autorotate)
     if layout.card_turned:
-        return replace(photo, rotation=(turns + 1) % 4, offset_x=-photo.offset_y, offset_y=photo.offset_x), area, False
+        return replace(photo, rotation=(turns + 1) % 4, offset_x=-photo.offset_y, offset_y=photo.offset_x,flip_x=photo.flip_y,flip_y=photo.flip_x), area, False
     return replace(photo, rotation=turns), area, False
 
 
@@ -695,6 +708,8 @@ def page_photos(photos: list[Photo], layout: Layout, page: int) -> list[Photo]:
 
 
 def _source_key(path: Path) -> tuple[str, int, int]:
+    from .vector_import import document_pdf, VECTOR_EXTENSIONS
+    if path.suffix.lower() in VECTOR_EXTENSIONS: path = document_pdf(path)
     stat = path.stat()
     return str(path.resolve()), stat.st_mtime_ns, stat.st_size
 
@@ -708,14 +723,15 @@ def _read_source(path: str, modified: int, length: int) -> Image.Image:
         from pillow_heif import register_heif_opener
         register_heif_opener()
     with Image.open(path) as opened:
-        upright = ImageOps.exif_transpose(opened)
-        return to_srgb(upright)
+        with RESOURCES.working(opened.width*opened.height*20):
+            upright = ImageOps.exif_transpose(opened)
+            return to_srgb(upright)
 
 
 def load_source(path: Path) -> Image.Image:
     """Load full resolution and EXIF orientation; callers must not mutate it."""
     photo = path if isinstance(path, Photo) else Photo(path)
-    if photo.path.suffix.lower() == '.pdf':
+    if photo.pdf_page is not None or photo.path.suffix.lower() == '.pdf':
         from .document_sources import pdf_render
         return pdf_render(photo.path, photo.pdf_page or 0)
     return _read_source(*_source_key(photo.path))
@@ -741,7 +757,7 @@ def source_size(path: Path) -> SourceSize:
     preserves square-pixel proportions even with inconsistent density pairs.
     """
     photo = path if isinstance(path, Photo) else Photo(path)
-    if photo.path.suffix.lower() == '.pdf':
+    if photo.pdf_page is not None or photo.path.suffix.lower() == '.pdf':
         from .document_sources import pdf_size
         w,h = pdf_size(photo.path, photo.pdf_page or 0)
         return SourceSize(round(w*300/25.4),round(h*300/25.4),300,False,(w,h))
@@ -804,12 +820,20 @@ def correct_image(image: Image.Image, correction: Correction) -> Image.Image:
 
 
 @image_memo(FULL_IMAGES,'corrected')
-def _corrected_source(path: str, modified: int, length: int, correction: Correction, turns: int) -> Image.Image:
-    result = correct_image(_read_source(path, modified, length), correction)
+def _corrected_source(path: str, modified: int, length: int, correction: Correction, turns: int, flip_x=False, flip_y=False) -> Image.Image:
+    source = _read_source(path, modified, length)
+    with RESOURCES.working(source.width*source.height*16):
+        result = correct_image(source, correction)
     if turns:
         result = result.transpose({1: Image.Transpose.ROTATE_270, 2: Image.Transpose.ROTATE_180,
                                    3: Image.Transpose.ROTATE_90}[turns])
-    return result
+    return reflected(result,flip_x,flip_y)
+
+
+def reflected(image, flip_x=False, flip_y=False):
+    if flip_x: image=image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    if flip_y: image=image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    return image
 
 
 def rotation_turns(image_size: tuple[int, int], cell: Rect, photo: Photo, autorotate: bool = True) -> int:
@@ -833,11 +857,12 @@ def photo_image(photo: Photo, correction: Correction, cell: Rect, autorotate: bo
         chosen = effective_correction(photo,correction) if apply_correction else Correction()
         source = correct_image(source,chosen)
         turns = rotation_turns(source.size,cell,photo,autorotate)
-        return source.transpose({1:Image.Transpose.ROTATE_270,2:Image.Transpose.ROTATE_180,
+        source = source.transpose({1:Image.Transpose.ROTATE_270,2:Image.Transpose.ROTATE_180,
                                  3:Image.Transpose.ROTATE_90}[turns]) if turns else source
+        return reflected(source,photo.flip_x,photo.flip_y)
     info = source_size(photo)
     correction = effective_correction(photo, correction) if apply_correction else Correction()
-    return _corrected_source(*_source_key(photo.path), correction, rotation_turns((info.width_px,info.height_px), cell, photo, autorotate))
+    return _corrected_source(*_source_key(photo.path), correction, rotation_turns((info.width_px,info.height_px), cell, photo, autorotate),photo.flip_x,photo.flip_y)
 
 
 @image_memo(PREVIEW_IMAGES,'legacy-preview-source')
@@ -868,6 +893,7 @@ def image_rect(image_size: tuple[int, int], cell: Rect, photo: Photo) -> Rect:
     return Rect(x, y, width, height)
 
 
+@working_budget(lambda photos,layout,page,correction,pixels_per_mm,**kw: round(layout.paper_width*pixels_per_mm)*round(layout.paper_height*pixels_per_mm)*12)
 def render_page(
     photos: list[Photo], layout: Layout, page: int, correction: Correction, pixels_per_mm: float,
     *, fast: bool = False, apply_correction: bool = True,
@@ -898,7 +924,7 @@ def render_page(
             width = max(1, min(oriented_size[0], math.ceil(placed.width * pixels_per_mm)))
             height = max(1, min(oriented_size[1], math.ceil(placed.height * pixels_per_mm)))
             chosen = effective_correction(photo, correction) if apply_correction else Correction()
-            source = _preview_corrected(*_source_key(photo.path), turns, width, height, chosen)
+            source = reflected(_preview_corrected(*_source_key(photo.path), turns, width, height, chosen),photo.flip_x,photo.flip_y)
         else:
             source = photo_image(photo, correction, cell, autorotate, apply_correction)
         if not fast:
@@ -1036,6 +1062,7 @@ class PreparedPDF:
         self.cleanup()
 
 
+@working_budget(lambda destination,photos,layout,correction,ppi=300,app_name=APP_NAME,**kw: round(layout.paper_width*ppi/25.4)*round(layout.paper_height*ppi/25.4)*12)
 def export_pdf(destination: Path, photos: list[Photo], layout: Layout, correction: Correction, ppi: int = 300,
                app_name: str = APP_NAME) -> int:
     """Export original-resolution corrected images, with millimetre PDF clips.

@@ -38,14 +38,14 @@ class LatestPreview:
         self.thread = threading.Thread(target=self._run, name='OttiskPreview', daemon=True)
         self.thread.start()
 
-    def submit(self, generation, render):
+    def submit(self, generation, render, prefetch=None):
         with self.condition:
             if self.closed:
                 return
             if self.cancel is not None:
                 self.cancel.set()
             self.cancel = threading.Event()
-            self.pending = (generation, render, self.cancel)
+            self.pending = (generation, render, self.cancel, prefetch)
             self.condition.notify()
 
     def invalidate(self):
@@ -68,13 +68,16 @@ class LatestPreview:
                 self.condition.wait_for(lambda: self.closed or self.pending is not None)
                 if self.closed:
                     return
-                generation, render, cancel = self.pending
+                generation, render, cancel, prefetch = self.pending
                 self.pending = None
             try:
                 with preview_cancellation(cancel):
                     result = render()
                     check_preview_cancelled()
                 self.results.put((generation, result, None))
+                if prefetch is not None:
+                    with preview_cancellation(cancel):
+                        prefetch()
             except PreviewCancelled:
                 pass
             except Exception as error:

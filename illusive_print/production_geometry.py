@@ -359,7 +359,7 @@ def render_placement(item,correction,size,apply_correction=True,*,screen=False):
     turns=rotation_turns(dimensions,reference,p,item.autorotate)
     p=replace(p,rotation=turns)
     cache=FULL_IMAGES if not screen and size[0]*size[1]>2000000 else PREVIEW_IMAGES
-    key=('production-screen' if screen else 'production-tile',_source_key(p.path),p.pdf_page,p.rotation,p.mode,p.zoom,p.offset_x,p.offset_y,
+    key=('production-screen' if screen else 'production-tile',_source_key(p.path),p.pdf_page,p.rotation,p.mode,p.zoom,p.offset_x,p.offset_y,p.flip_x,p.flip_y,
          p.correction,p.curve,chosen,(item.trim.x-item.paint.x,item.trim.y-item.paint.y,item.trim.width,item.trim.height,item.paint.width,item.paint.height),
          None if item.reference is None else (item.reference.x-item.paint.x,item.reference.y-item.paint.y,item.reference.width,item.reference.height),item.source_box,size)
     tile=cache.get(key)

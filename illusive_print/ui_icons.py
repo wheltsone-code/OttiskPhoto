@@ -28,7 +28,7 @@ def icon(master,kind,size=16,color='#737782'):
 
 def install_icons(app):
     pixels=max(16,round(16*float(app.root.tk.call('tk','scaling'))/(96/72)))
-    app._outline_icons={kind:icon(app.root,kind,pixels,'#f53286' if kind=='grid' else '#737782') for kind in ('grid','paper','size','stack','book','trim','color')}
+    app._outline_icons={kind:icon(app.root,kind,pixels,'#FD3977' if kind=='grid' else '#737782') for kind in ('grid','paper','size','stack','book','trim','color')}
     mapping={'Раскладка':'grid','Бумага':'paper','Размер фото':'size','Размер изделия после реза':'size','Размер страницы':'book','Тираж':'stack'}
     def visit(widget):
         if isinstance(widget,ttk.Label):

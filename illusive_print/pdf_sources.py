@@ -5,19 +5,22 @@ from io import BytesIO
 from pathlib import Path
 from pypdf import PdfReader,PdfWriter
 from pypdf.generic import NameObject,NumberObject,RectangleObject
+from .image_cache import FULL_IMAGES, object_memo
 
 
 def source_key(path):
+    from .vector_import import document_pdf
+    path=document_pdf(path)
     path=Path(path);stat=path.stat()
     return str(path.resolve()),stat.st_mtime_ns,stat.st_size
 
 
-@lru_cache(maxsize=12)
+@object_memo(FULL_IMAGES,'pdf-parser',lambda args,value:args[2]*3+8192)
 def reader(path,modified,length):
     return PdfReader(path)
 
 
-@lru_cache(maxsize=64)
+@object_memo(FULL_IMAGES,'pdf-normalized',lambda args,value:args[2]*3+8192)
 def normalized_page(path,modified,length,index):
     owner=PdfWriter()
     page=owner.add_page(reader(path,modified,length).pages[index])
@@ -41,7 +44,7 @@ def trim_size(path,index):
     return float(box.width)*25.4/72,float(box.height)*25.4/72
 
 
-@lru_cache(maxsize=32)
+@object_memo(FULL_IMAGES,'pdf-display',lambda args,value:len(value)+1024)
 def display_bytes(path,modified,length,index):
     page=copy(normalized_page(path,modified,length,index))
     page.mediabox=RectangleObject(page.trimbox);page.cropbox=RectangleObject(page.trimbox)

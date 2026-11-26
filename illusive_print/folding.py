@@ -63,7 +63,7 @@ class FoldingMixin:
         self._library_from=index
         self._library_target=index
         import tkinter as tk
-        self._insert_line=tk.Frame(self.library_inner if hasattr(self,'library_inner') else self.thumbnail_widgets[0][0].master,bg='#f53286',height=3)
+        self._insert_line=tk.Frame(self.library_inner if hasattr(self,'library_inner') else self.thumbnail_widgets[0][0].master,bg='#FD3977',height=3)
         self.library_move_motion(event)
         return 'break'
 

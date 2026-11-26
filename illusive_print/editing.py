@@ -47,12 +47,12 @@ class EditingMixin:
         return any(p.correction is not None or p.curve is not None for p in self.editing_photos())
 
     def frame_snapshot(self, photos=None):
-        return [(photo, photo.mode, photo.offset_x, photo.offset_y, photo.rotation, photo.zoom)
+        return [(photo, photo.mode, photo.offset_x, photo.offset_y, photo.rotation, photo.zoom, photo.flip_x, photo.flip_y)
                 for photo in (self.photos if photos is None else photos)]
 
     def remember(self, before):
-        changed = any((p.mode, p.offset_x, p.offset_y, p.rotation, p.zoom) != (mode, x, y, rotation, zoom)
-                      for p, mode, x, y, rotation, zoom in before)
+        changed = any((p.mode, p.offset_x, p.offset_y, p.rotation, p.zoom, p.flip_x, p.flip_y) != (mode, x, y, rotation, zoom, fx, fy)
+                      for p, mode, x, y, rotation, zoom, fx, fy in before)
         if changed:
             self._undo_stack.append(before)
             self._undo_stack = self._undo_stack[-100:]
@@ -61,9 +61,10 @@ class EditingMixin:
         if self._drag:
             self.end_drag()
         if self._undo_stack:
-            for photo, mode, x, y, rotation, zoom in self._undo_stack.pop():
+            for photo, mode, x, y, rotation, zoom, fx, fy in self._undo_stack.pop():
                 if any(photo is current for current in self.photos):
                     photo.mode, photo.offset_x, photo.offset_y, photo.rotation, photo.zoom = mode, x, y, rotation, zoom
+                    photo.flip_x, photo.flip_y = fx, fy
             self.refresh()
         return "break"
 
@@ -142,8 +143,9 @@ class EditingMixin:
             self.highlight_target(None)
             self.preview_canvas.configure(cursor='hand2')
         if self._drag:
-            photo, mode, x, y, rotation, zoom = self._drag["before"][0]
+            photo, mode, x, y, rotation, zoom, fx, fy = self._drag["before"][0]
             photo.mode, photo.offset_x, photo.offset_y, photo.rotation, photo.zoom = mode, x, y, rotation, zoom
+            photo.flip_x, photo.flip_y = fx, fy
             self._drag = None
             self.preview_canvas.configure(cursor="hand2")
             self.refresh()
@@ -157,6 +159,17 @@ class EditingMixin:
                 photo.reset_frame()
             self.remember(before)
             self.refresh()
+
+    def reflect_photos(self, horizontal=True):
+        group = self.editing_photos()
+        if not group or self.layout is None: return
+        before = self.frame_snapshot(group)
+        # Cards/booklet pages may receive an additional physical quarter turn.
+        turned = self.layout.card_turned or bool(self.layout.mode=='booklet' and
+                    self.layout.booklet_page_size and spread_grid(self.layout)[4])
+        for photo in group: photo.reflect(horizontal != bool(turned))
+        self.remember(before)
+        self.refresh()
 
     def zoom_photo(self, delta=10):
         if self.layout is None or not 0 <= self.selected < len(self.photos):
